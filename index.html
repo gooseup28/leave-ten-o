@@ -266,6 +266,17 @@
         document.getElementById('resetBtn').addEventListener('click', () => {
             try { document.getElementById('appFrame').contentWindow.openDemoResetModal(); } catch (e) {}
         });
+
+        // '← 포트폴리오 홈': 3개 앱 홈(/portfolio/)에서 왔으면 그곳으로, 아니면 기본 홈으로
+        try {
+            const ref = document.referrer ? new URL(document.referrer) : null;
+            if (ref && ref.origin === location.origin) {
+                if (ref.pathname.startsWith('/portfolio/')) sessionStorage.setItem('hub_home', '/portfolio/');
+                else if (ref.pathname === '/' || ref.pathname === '/index.html') sessionStorage.removeItem('hub_home');
+            }
+            const home = sessionStorage.getItem('hub_home');
+            if (home) document.querySelectorAll('.home-link').forEach(a => { a.href = home; });
+        } catch (e) {}
     </script>
 </body>
 </html>
