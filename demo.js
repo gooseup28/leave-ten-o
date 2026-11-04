@@ -7,7 +7,7 @@
 (function () {
     // 같은 도메인(github.io)의 DAY-TEN-O 데모와 저장소가 섞이지 않도록 앱 키와 다른 접두어를 씀
     const DB_KEY = 'leaveteno_demo_db';
-    const AUTH_KEY = 'leave_ten_o_auth';
+    const AUTH_KEY = 'leaveteno_auth';
     const STORAGE_PREFIXES = ['leaveteno_', 'leave_ten_o'];
     const START_ROOM = 'user_dongun';
     const DEMO_PIN = '0000';

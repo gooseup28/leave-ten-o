@@ -13,10 +13,13 @@
     <meta property="og:description" content="계정별 휴가·일정 캘린더, 계급 자동 표시, 공용 공지, 캘린더 인쇄까지 — 전우들과 함께 쓰는 군 복무 일정 앱">
     <meta property="og:image" content="https://gooseup28.github.io/leave-ten-o/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2322C55E'/%3E%3Ctext x='32' y='44' font-family='Arial' font-size='34' font-weight='900' text-anchor='middle' fill='%230F0F0F'%3EL%3C/text%3E%3C/svg%3E">
+    <meta name="theme-color" content="#0F0F0F">
+    <!-- 4개 앱 공통 궤도 로고 -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%230F0F0F'/%3E%3Ccircle cx='50' cy='50' r='34' fill='none' stroke='%2322C55E' stroke-width='5'/%3E%3Ccircle cx='20.5' cy='33' r='7' fill='%2322C55E'/%3E%3Ccircle cx='67' cy='79.5' r='7' fill='%2322C55E'/%3E%3Ctext x='50' y='61' font-family='Arial' font-size='30' font-weight='700' text-anchor='middle' fill='%2322C55E'%3EL%3C/text%3E%3C/svg%3E">
 
-    <!-- Pretendard Font -->
+    <!-- 4개 앱 공통 글꼴: 본문 Pretendard, 영문 앱 이름 Montserrat -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap">
 
     <!-- 데모: Supabase 대신 브라우저 저장소를 쓰는 가짜 DB + 샘플 계정 -->
     <script src="demo.js"></script>
@@ -33,7 +36,8 @@
 
         :root {
             --theme-color: #22C55E;
-            --bg-base: #0F0F0F;        
+            --theme-ink: var(--theme-color);   /* 바탕 위 대표색 글자·아이콘 (밝은 화면에서는 더 진하게) */
+            --bg-base: #0F0F0F;
             --bg-surface: #1C1C1E;     
             --bg-widget: #1A1A1A;      
             --bg-input: #1C1C1E;       
@@ -71,6 +75,8 @@
             --text-primary: #000000;
             --text-secondary: #8E8E93;
             --border-color: rgba(0, 0, 0, 0.1);
+            /* 파스텔 대표색은 흰 바탕에서 잘 안 보여서 검정을 섞어 진하게 */
+            --theme-ink: color-mix(in srgb, var(--theme-color) 65%, #000);
         }
 
         * {
@@ -105,10 +111,10 @@
 
         /* ================= [CSS: HEADER & D-DAY] ================= */
         .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 0 5px; margin-bottom: 10px; }
-        .top-bar .icon-btn { background: none; border: none; color: var(--theme-color); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 5px; }
-        .top-bar .logo { font-size: 1.2rem; font-weight: 800; letter-spacing: 1px; color: var(--text-primary); transition: color 0.3s; }
+        .top-bar .icon-btn { background: none; border: none; color: var(--theme-ink); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 5px; }
+        .top-bar .logo { font-family: 'Montserrat', 'Pretendard', sans-serif; font-size: 1.2rem; font-weight: 500; letter-spacing: 0.8px; color: var(--text-primary); transition: color 0.3s; }
         .dday-header { text-align: center; padding-top: 10px; }
-        .dday-subtitle { font-size: 0.95rem; color: var(--text-secondary); font-weight: 600; margin-bottom: 8px; letter-spacing: 2px; }
+        .dday-subtitle { font-family: 'Montserrat', 'Pretendard', sans-serif; font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; margin-bottom: 8px; letter-spacing: 2px; }
         .dday-title { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; line-height: 1; text-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); transition: color 0.3s; }
 
         /* ================= [CSS: WIDGETS & CALENDAR] ================= */
@@ -117,7 +123,7 @@
         .stat-item { flex: 1; text-align: center; position: relative; }
         .stat-item:not(:last-child)::after { content: ''; position: absolute; right: 0; top: 20%; height: 60%; width: 1px; background-color: var(--border-color); }
         .stat-value { font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; }
-        .stat-value.highlight { color: var(--theme-color); }
+        .stat-value.highlight { color: var(--theme-ink); }
         .stat-label { font-size: 0.75rem; color: var(--text-secondary); font-weight: 500; }
 
         .calendar-card { background-color: var(--bg-surface); border-radius: var(--radius-lg); padding: 24px 15px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); }
@@ -191,7 +197,7 @@
         .settings-card { background-color: var(--bg-surface); border-radius: 16px; overflow: hidden; margin-bottom: 24px; border: 1px solid var(--border-color); }
         .settings-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border-color); }
         .settings-label { font-size: 1rem; font-weight: 500; display: flex; align-items: center; gap: 10px; }
-        .settings-label svg { stroke: var(--theme-color); }
+        .settings-label svg { stroke: var(--theme-ink); }
         .pill-input { background-color: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 12px; border-radius: 10px; text-align: right; font-size: 0.9rem; font-weight: 500; outline: none; display: flex; width: 140px; justify-content: flex-end;}
         .settings-link { color: var(--text-secondary); font-size: 0.95rem; cursor: pointer; }
         
@@ -211,6 +217,8 @@
 
         .logout-btn { background: transparent; border: 1px solid var(--accent-red); color: var(--accent-red); font-size: 1rem; font-weight: 600; border-radius: 24px; padding: 12px 24px; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 10px auto 30px auto; cursor: pointer; width: fit-content; transition: 0.2s;}
         .logout-btn:active { background: rgba(255,69,58,0.1); }
+        .demo-reset-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; margin-top: -8px; border-radius: 16px; border: 1px solid var(--border-color); background: var(--bg-surface); color: var(--text-primary); font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.2s ease; }
+        .demo-reset-btn:active { transform: scale(0.97); background: var(--bg-input); }
 
         .memo-sort-tabs { display: flex; background: var(--bg-input); border-radius: 20px; padding: 4px; margin: 0 auto 20px auto; width: 100%; max-width: 240px; border: 1px solid var(--border-color); }
         .memo-sort-btn { flex: 1; padding: 8px 16px; border: none; background: transparent; color: var(--text-secondary); font-weight: 600; font-size: 0.9rem; border-radius: 16px; cursor: pointer; transition: all 0.2s ease; }
@@ -219,7 +227,7 @@
         .memo-list { display: flex; flex-direction: column; gap: 12px; padding-bottom: 80px; width: 100%; }
         .memo-card-main { background-color: var(--bg-surface); padding: 18px; border-radius: 16px; border: 1px solid var(--border-color); cursor: pointer; transition: transform 0.2s; }
         .memo-card-main:active { transform: scale(0.98); }
-        .memo-card-date { font-size: 0.8rem; font-weight: 600; color: var(--theme-color); margin-bottom: 8px; }
+        .memo-card-date { font-size: 0.8rem; font-weight: 600; color: var(--theme-ink); margin-bottom: 8px; }
         .memo-card-content { font-size: 1rem; color: var(--text-primary); white-space: pre-wrap; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
         /* ================= [CSS: BOTTOM NAV & FAB] ================= */
@@ -227,7 +235,7 @@
         body.light-mode .bottom-nav { background: rgba(255, 255, 255, 0.85); }
         
         .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-secondary); gap: 4px; width: 60px; cursor: pointer; transition: color 0.2s; }
-        .nav-item.active { color: var(--theme-color); } 
+        .nav-item.active { color: var(--theme-ink); } 
         .nav-label { font-size: 0.65rem; font-weight: 500; }
         
         .nav-fab-wrapper { position: relative; top: -24px; display: flex; justify-content: center; align-items: center; }
@@ -318,8 +326,8 @@
         .policy-modal-overlay.active .policy-modal { transform: scale(1); }
         
         .policy-modal-header { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); background: rgba(255,255,255,0.03); position: relative; }
-        .policy-modal-title { font-size: 1.1rem; font-weight: 700; color: var(--theme-color); position: absolute; left: 50%; transform: translateX(-50%); pointer-events: none; }
-        .policy-close-btn { background: none; border: none; color: var(--theme-color); font-size: 1.05rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; min-width: 54px; padding: 4px 8px; margin: -4px -8px; z-index: 10; letter-spacing: -0.3px; transition: opacity 0.2s; }
+        .policy-modal-title { font-size: 1.1rem; font-weight: 700; color: var(--theme-ink); position: absolute; left: 50%; transform: translateX(-50%); pointer-events: none; }
+        .policy-close-btn { background: none; border: none; color: var(--theme-ink); font-size: 1.05rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; min-width: 54px; padding: 4px 8px; margin: -4px -8px; z-index: 10; letter-spacing: -0.3px; transition: opacity 0.2s; }
         .policy-close-btn:active { opacity: 0.7; }
         
         .policy-modal-body { padding: 24px 20px; overflow-y: auto; color: var(--text-primary); font-size: 0.95rem; line-height: 1.6; word-break: keep-all; }
@@ -335,7 +343,7 @@
         .btn-cancel:active { color: var(--text-primary); }
         .btn-save { background-color: var(--theme-color); color: #000; border: none; border-radius: 20px; padding: 8px 20px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: 0.2s; z-index: 10; }
         .btn-save:active { transform: scale(0.95); }
-        .btn-add-custom { background-color: transparent; color: var(--theme-color); border: 1.5px solid var(--theme-color); border-radius: 20px; padding: 7px 18px; font-weight: 700; font-size: 0.95rem; cursor: pointer; display: none; z-index: 10; }
+        .btn-add-custom { background-color: transparent; color: var(--theme-ink); border: 1.5px solid var(--theme-ink); border-radius: 20px; padding: 7px 18px; font-weight: 700; font-size: 0.95rem; cursor: pointer; display: none; z-index: 10; }
 
         .form-section { margin-bottom: 24px; } 
         .form-label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px; }
@@ -421,7 +429,7 @@
         .todo-check.checked { background-color: var(--theme-color); border-color: var(--theme-color); }
         
         .todo-text { flex: 1; font-size: 1rem; transition: color 0.3s ease, text-decoration-color 0.3s ease; }
-        .todo-text.checked { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-color: var(--theme-color); color: var(--theme-color); opacity: 0.7; font-style: italic; font-weight: 600; }
+        .todo-text.checked { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-color: var(--theme-color); color: var(--theme-ink); opacity: 0.7; font-style: italic; font-weight: 600; }
         body.light-mode .todo-text.checked { opacity: 0.8; }
         
         .event-card { display: flex; flex-direction: column; gap: 6px; padding: 16px; background-color: var(--bg-input); border-radius: 16px; border-left: 4px solid var(--event-color, var(--theme-color)); }
@@ -496,6 +504,14 @@
         /* ================= [CSS: PASSCODE LOCK & CONTEXT] ================= */
         .lock-screen { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.3s ease; }
         body.light-mode .lock-screen { background: rgba(255, 255, 255, 0.85); }
+        .lock-logo { width: 92px; height: 92px; margin-bottom: 16px; color: var(--theme-color); user-select: none; }
+        .lock-logo svg { width: 100%; height: 100%; display: block; overflow: visible; }
+        .lock-logo .orbit-ring { opacity: 0.85; }
+        .lock-logo .orbit-text { font-family: 'Montserrat', sans-serif; font-size: 8px; font-weight: 500; letter-spacing: 0.8px; fill: currentColor; text-anchor: middle; }
+        body.light-mode .lock-logo { color: #111111; }
+        body.light-mode .lock-logo .orbit-ring { opacity: 0.25; }
+        @media (max-height: 700px) { .lock-logo { width: 64px; height: 64px; margin-bottom: 8px; } }
+        @media (max-height: 600px) { .lock-logo { display: none; } }
         .lock-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 30px; color: var(--text-primary); }
         .lock-indicators { display: flex; gap: 16px; margin-bottom: 50px; }
         .lock-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--text-primary); transition: all 0.2s; }
@@ -578,12 +594,12 @@
 
         /* ================= [CSS: DEMO BADGE & HINTS] ================= */
         .logo-wrap { display: flex; align-items: center; gap: 6px; min-width: 0; }
-        .demo-badge { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.5px; color: var(--theme-color); border: 1px solid var(--theme-color); border-radius: 6px; padding: 2px 5px; line-height: 1; background: none; cursor: pointer; flex-shrink: 0; transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s; }
+        .demo-badge { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.5px; color: var(--theme-ink); border: 1px solid var(--theme-ink); border-radius: 6px; padding: 2px 5px; line-height: 1; background: none; cursor: pointer; flex-shrink: 0; transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s; }
         .demo-badge:active { transform: scale(0.92); opacity: 0.7; }
         .lock-hint { margin: -14px 0 40px; padding: 8px 14px; border-radius: 999px; background: rgba(150, 150, 150, 0.14); color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; }
-        .lock-hint b { color: var(--theme-color); letter-spacing: 1px; }
+        .lock-hint b { color: var(--theme-ink); letter-spacing: 1px; }
         .demo-hint { font-size: 0.78rem; color: var(--text-secondary); text-align: center; margin-top: 10px; }
-        .demo-hint b { color: var(--theme-color); letter-spacing: 1px; }
+        .demo-hint b { color: var(--theme-ink); letter-spacing: 1px; }
 
         /* 포트폴리오 페이지의 휴대폰 틀 안에서는 스크롤바 숨김 */
         html.embedded { scrollbar-width: none; }
@@ -695,6 +711,19 @@
     </script>
 </head>
 <body>
+<!-- 첫 화면이 어둡게 번쩍이지 않도록 밝기·테마 색을 먼저 적용 -->
+<script>
+    (function() {
+        try {
+            const mode = localStorage.getItem('leaveteno_theme_mode');
+            const isDark = mode ? mode === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (!isDark) document.body.classList.add('light-mode');
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', isDark ? '#0F0F0F' : '#F2F2F7');
+            const color = localStorage.getItem('leaveteno_theme_color');
+            if (color) document.documentElement.style.setProperty('--theme-color', color);
+        } catch (e) {}
+    })();
+</script>
 
 <!-- ================= [HTML: IN-APP TOAST BANNER] ================= -->
 <div id="inAppNotificationBanner" class="in-app-toast" onpointerdown="handleToastPointerDown(event)" onpointermove="handleToastPointerMove(event)" onpointerup="handleToastPointerUp(event)" onpointercancel="handleToastPointerUp(event)" style="touch-action: none; display: flex; align-items: center; gap: 14px;">
@@ -718,15 +747,24 @@
         const params = new URLSearchParams(window.location.search);
         const room = params.get('room');
         if (!room || room === 'default') {
-            localStorage.setItem('leave_ten_o_auth', 'true');
+            localStorage.setItem('leaveteno_auth', 'true');
         }
         // 이미 잠금 해제된 상태면 페이지를 열 때 잠금화면이 잠깐 비치지 않도록 바로 숨김
-        if (localStorage.getItem('leave_ten_o_auth') === 'true') {
+        if (localStorage.getItem('leaveteno_auth') === 'true') {
             document.write('<style>#lockScreen { display: none !important; }</style>');
         }
     })();
 </script>
 <div id="lockScreen" class="lock-screen" onclick="document.getElementById('nativePasscodeInput').focus()">
+    <!-- 4개 앱 공통 궤도 로고 (어두운 화면: 대표색, 밝은 화면: #111111) -->
+    <div class="lock-logo" role="img" aria-label="LEAVE-TEN-O 로고">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+            <circle class="orbit-ring" cx="50" cy="50" r="36" fill="none" stroke="currentColor" stroke-width="1.15"/>
+            <circle cx="18.82" cy="32" r="2.6" fill="currentColor"/>
+            <circle cx="68" cy="81.18" r="2.6" fill="currentColor"/>
+            <text class="orbit-text" x="49.6" y="52.8">LEAVE-TEN-O</text>
+        </svg>
+    </div>
     <div class="lock-title">암호 입력</div>
     <div class="lock-hint">샘플 계정 암호는 <b>0000</b></div>
     <div class="lock-indicators" id="lockIndicators">
@@ -781,7 +819,7 @@
         <div class="ios-alert-title">휴가 사용 내역</div>
         <div class="ios-alert-sub" id="usageInfoSub" style="white-space: pre-line; line-height: 1.5; padding-bottom: 4px;"></div>
         <div class="ios-alert-buttons">
-            <button class="ios-alert-btn cancel" onclick="closeUsageInfoModal(null, true)" style="width: 100%; font-weight: 600; color: var(--theme-color);">확인</button>
+            <button class="ios-alert-btn cancel" onclick="closeUsageInfoModal(null, true)" style="width: 100%; font-weight: 600; color: var(--theme-ink);">확인</button>
         </div>
     </div>
 </div>
@@ -879,7 +917,7 @@
         <!-- 최신 공지 영역 (기본 화면용) -->
         <div id="latestNoticeContainer" style="display: none; padding: 16px; margin-top: 16px; margin-bottom: 80px; background: var(--bg-surface); border-radius: 20px; border: 1px solid var(--border-color); cursor: pointer; animation: fadeIn 0.4s cubic-bezier(0.25, 1, 0.5, 1);" onclick="switchView('memo')">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <span style="font-size: 0.75rem; font-weight: 700; color: var(--theme-color); display:flex; align-items:center; gap:4px;">
+                <span style="font-size: 0.75rem; font-weight: 700; color: var(--theme-ink); display:flex; align-items:center; gap:4px;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                     최신 공지
                 </span>
@@ -931,13 +969,13 @@
         <div class="settings-group-title">편의 기능</div>
         <div class="settings-card">
             <div class="settings-item">
-                <span class="settings-label"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--theme-color)" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>다크 모드</span>
+                <span class="settings-label"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--theme-ink)" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>다크 모드</span>
                 <label class="toggle-switch"><input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode(event)"><span class="slider"></span></label>
             </div>
             <div class="settings-item" style="flex-direction: column; align-items: stretch; gap: 10px; padding: 16px 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                     <span class="settings-label">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--theme-color)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--theme-ink)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
                         알림 (D-Day, 일정, 근무)
                     </span>
                     <label class="toggle-switch">
@@ -949,7 +987,7 @@
                 <div id="notificationSubSettings" style="display: none; flex-direction: column; gap: 12px; padding-top: 12px; border-top: 1px solid var(--border-color); margin-top: 4px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
                         <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 6px;">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--theme-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--theme-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                             알림
                         </span>
                         <select id="notificationTimingSelect" class="pill-input" style="font-size: 0.8rem; padding: 6px 10px; background: var(--bg-input); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 8px; outline: none;" onchange="changeNotificationTiming(event)">
@@ -967,7 +1005,7 @@
             <!-- 공휴일 토글 스위치 -->
             <div class="settings-item">
                 <span class="settings-label">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--theme-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--theme-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                     공휴일 표시
                 </span>
                 <label class="toggle-switch"><input type="checkbox" id="holidayToggle" checked onchange="toggleHoliday(event)"><span class="slider"></span></label>
@@ -975,7 +1013,7 @@
             <!-- 글자 크기 3단 세그먼트 버튼 -->
             <div class="settings-item" style="flex-direction: column; align-items: stretch; gap: 16px; padding: 20px;">
                 <span class="settings-label">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--theme-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--theme-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
                     글자 크기
                 </span>
                 <div class="segment-control" id="fontSegmentControl">
@@ -989,7 +1027,8 @@
 
         <div class="settings-group-title">테마</div>
         <div class="settings-card" style="padding: 16px 20px;">
-            <div id="themeColorGrid" style="display: flex; gap: 14px; flex-wrap: wrap; align-items: center; justify-content: flex-start;">
+            <!-- 4개 앱 공통 테마 색 8가지 (4개씩 두 줄) -->
+            <div id="themeColorGrid" style="display: grid; grid-template-columns: repeat(4, 32px); gap: 14px; justify-content: space-around; align-items: center;">
                 <!-- JS Inject -->
             </div>
         </div>
@@ -1013,6 +1052,12 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
             </div>
         </div>
+
+        <!-- 데모 초기화 (4개 앱 공통: 설정 맨 아래) -->
+        <button class="demo-reset-btn" onclick="openDemoResetModal()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
+            데모 초기화
+        </button>
     </div>
 
     <!-- ================= [HTML: BOTTOM NAV] ================= -->
@@ -1094,7 +1139,7 @@
             <div id="workDaysBadge" style="margin-top: 14px; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px 16px; border-radius: 12px; display: flex; justify-content: center; align-items: center; gap: 2px; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
                 <div style="display: flex; align-items: center; gap: 3px; line-height: 1;">
                     <span style="color: var(--text-secondary); font-size: 0.82rem; font-weight: 600; line-height: 1; display: inline-flex; align-items: center;">남은 복무</span>
-                    <div style="font-size: 1.05rem; font-weight: 800; color: var(--theme-color); display: inline-flex; align-items: center; line-height: 1;">
+                    <div style="font-size: 1.05rem; font-weight: 800; color: var(--theme-ink); display: inline-flex; align-items: center; line-height: 1;">
                         <span id="badgeTotalRemain" style="line-height: 1;">0</span>
                         <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-primary); margin-left: 1px; line-height: 1;">일</span>
                     </div>
@@ -1102,7 +1147,7 @@
                 <div style="width: 1px; height: 12px; background: var(--border-color); margin: 0 2px;"></div>
                 <div style="display: flex; align-items: center; gap: 3px; line-height: 1;">
                     <span style="color: var(--text-secondary); font-size: 0.82rem; font-weight: 600; line-height: 1; display: inline-flex; align-items: center;">남은 일과</span>
-                    <div style="font-size: 1.05rem; font-weight: 800; color: var(--theme-color); display: inline-flex; align-items: center; line-height: 1;">
+                    <div style="font-size: 1.05rem; font-weight: 800; color: var(--theme-ink); display: inline-flex; align-items: center; line-height: 1;">
                         <span id="badgeWorkRemain" style="line-height: 1;">0</span>
                         <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-primary); margin-left: 1px; line-height: 1;">일</span>
                     </div>
@@ -1151,12 +1196,6 @@
     <button class="logout-btn" style="width: 100%; border-color: var(--border-color); color: var(--text-primary); justify-content: center; border-radius: 12px; margin-bottom: 16px;" onclick="handleLogout()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
         로그아웃
-    </button>
-
-    <!-- 데모 초기화 (추가·변경한 데이터를 지우고 처음 샘플 데이터로) -->
-    <button class="logout-btn" style="width: 100%; border-color: var(--border-color); color: var(--text-primary); justify-content: center; border-radius: 12px; margin: 0 0 16px;" onclick="openDemoResetModal()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
-        데모 초기화
     </button>
 
     <!-- 관리자 메뉴 (기본 캘린더에서만 표시) -->
@@ -1636,6 +1675,7 @@
         },
         themeColors: [
             { name: '시그니처 그린', color: '#22C55E' },
+            { name: '샴페인 골드', color: '#E5C158' },
             { name: '소프트 핑크', color: '#FFB6C1' },
             { name: '스카이 블루', color: '#81D4FA' },
             { name: '민트 그린', color: '#80CBC4' },
@@ -1805,7 +1845,7 @@
 
     function verifyPasscode() {
         if (currentPasscode === TARGET_PASSCODE) {
-            localStorage.setItem('leave_ten_o_auth', 'true');
+            localStorage.setItem('leaveteno_auth', 'true');
             const lockScreen = $id('lockScreen');
             lockScreen.classList.add('fade-out');
             $id('nativePasscodeInput').blur();
@@ -1827,7 +1867,7 @@
     }
 
     window.handleLogout = function() {
-        localStorage.removeItem('leave_ten_o_auth');
+        localStorage.removeItem('leaveteno_auth');
         window.location.reload();
     };
 
@@ -1861,7 +1901,7 @@
     /* ================= [JS: INITIALIZATION & GLOBAL] ================= */
     window.onload = function() {
         try {
-            if (localStorage.getItem('leave_ten_o_auth') === 'true') {
+            if (localStorage.getItem('leaveteno_auth') === 'true') {
                 const lock = $id('lockScreen');
                 if(lock) lock.style.display = 'none';
             }
@@ -2407,28 +2447,33 @@
         }
     };
     /* ================= [JS: THEME LOGIC] ================= */
-    function initTheme() {
-        const savedMode = localStorage.getItem('leaveteno_theme_mode') || 'dark';
+    // 밝게/어둡게: 직접 바꾼 적이 없으면 기기 설정을 따라감 (4개 앱 공통)
+    const systemDarkMedia = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function applyThemeMode(isDark) {
+        document.body.classList.toggle('light-mode', !isDark);
         const toggle = $id('darkModeToggle');
-        if(savedMode === 'light') {
-            document.body.classList.add('light-mode');
-            if(toggle) toggle.checked = false;
-        } else {
-            if(toggle) toggle.checked = true;
-        }
+        if(toggle) toggle.checked = isDark;
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if(meta) meta.setAttribute('content', isDark ? '#0F0F0F' : '#F2F2F7');
+    }
+
+    function initTheme() {
+        const savedMode = localStorage.getItem('leaveteno_theme_mode');
+        applyThemeMode(savedMode ? savedMode === 'dark' : systemDarkMedia.matches);
         const savedColor = localStorage.getItem('leaveteno_theme_color') || '#22C55E';
         document.documentElement.style.setProperty('--theme-color', savedColor);
         renderThemeColorChips();
     }
 
+    systemDarkMedia.addEventListener('change', e => {
+        if(!localStorage.getItem('leaveteno_theme_mode')) applyThemeMode(e.matches);
+    });
+
     window.toggleDarkMode = function(e) {
-        if(e.target.checked) {
-            document.body.classList.remove('light-mode');
-            localStorage.setItem('leaveteno_theme_mode', 'dark');
-        } else {
-            document.body.classList.add('light-mode');
-            localStorage.setItem('leaveteno_theme_mode', 'light');
-        }
+        const isDark = e.target.checked;
+        applyThemeMode(isDark);
+        localStorage.setItem('leaveteno_theme_mode', isDark ? 'dark' : 'light');
     };
 
     window.changeThemeColor = function(color) {
@@ -2965,7 +3010,7 @@
 
             const html = `
                 <div class="search-result-item" onclick="goToSearchResult('${actualDate}', '${isMemo ? 'memo' : 'event'}')">
-                    <div style="font-size: 0.75rem; color: var(--theme-color); margin-bottom: 4px; font-weight:600;">${escapeHtml(typeTag)} &middot; ${actualDate}</div>
+                    <div style="font-size: 0.75rem; color: var(--theme-ink); margin-bottom: 4px; font-weight:600;">${escapeHtml(typeTag)} &middot; ${actualDate}</div>
                     <div style="font-weight: 600; margin-bottom: 4px; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(title)}</div>
                     <div style="font-size: 0.85rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(subtitle)}</div>
                 </div>`;
@@ -3314,7 +3359,7 @@
                 policyIntro('DAY-TEN-O를 같이 쓰고 싶다는 전우들을 위해, 각자 계정을 만들어 쓸 수 있게 확장한 LEAVE-TEN-O의 포트폴리오용 데모입니다.'),
                 policySection('샘플 계정', '동건(상병) · 민준(일병) · 지훈(병장) 세 계정이 준비되어 있어요. 오른쪽 위 프로필에서 계정을 바꾸면 잠금화면이 뜨고, 암호는 모두 <b>0000</b>입니다. 계정마다 휴가·일정·메모가 따로 저장돼요.'),
                 policySection('기본 캘린더와 공지', '모두가 함께 보는 공용 캘린더예요. 공지를 쓰거나 지우려면 관리자 암호가 필요하고, 데모에서는 <b>0000</b>입니다.'),
-                policySection('데이터 저장', '서버와 연결되어 있지 않습니다. 직접 만든 계정과 일정은 지금 쓰는 브라우저(localStorage)에만 저장되고, 다른 방문자에게 보이지 않습니다. 프로필의 \'데모 초기화\'로 언제든 처음 상태로 돌아갈 수 있어요.'),
+                policySection('데이터 저장', '서버와 연결되어 있지 않습니다. 직접 만든 계정과 일정은 지금 쓰는 브라우저(localStorage)에만 저장되고, 다른 방문자에게 보이지 않습니다. 설정 맨 아래의 \'데모 초기화\'로 언제든 처음 상태로 돌아갈 수 있어요.'),
                 policySection('원본 앱과 다른 점', '원본은 Supabase로 여러 기기와 실시간 동기화하고 브라우저 알림을 보냅니다. 데모에서는 이 부분만 빼고, 영어 전환은 번역이 덜 끝나 숨겼어요.'),
                 policySection('숨은 기능', '위쪽 이름(로고)을 1초 안에 연달아 10번 눌러 보세요.')
             ])
@@ -3334,7 +3379,7 @@
                 policySection('1. 저장되는 정보', '직접 만든 계정(이름·입대일·암호)과 일정, 메모, 휴가 내역, 설정값은 이 브라우저의 localStorage에만 저장되며 외부 서버로 전송되지 않습니다. 실제 정보 대신 아무 이름이나 넣어도 됩니다.'),
                 policySection('2. 쿠키 및 분석 도구', '사용하지 않습니다.'),
                 policySection('3. 외부 요청', '페이지 호스팅(GitHub Pages)과 글꼴·효과 라이브러리를 받는 CDN(jsDelivr)이 일반적인 접속 기록(IP 주소 등)을 남길 수 있습니다.'),
-                policySection('4. 삭제', '프로필의 \'데모 초기화\' 또는 브라우저의 사이트 데이터 삭제로 언제든 지울 수 있습니다.')
+                policySection('4. 삭제', '설정의 \'데모 초기화\' 또는 브라우저의 사이트 데이터 삭제로 언제든 지울 수 있습니다.')
             ])
         },
         opensource: {
@@ -4762,7 +4807,7 @@
     if(profileSelect) {
         profileSelect.addEventListener('change', (e) => {
             const selected = e.target.value;
-            localStorage.removeItem('leave_ten_o_auth');
+            localStorage.removeItem('leaveteno_auth');
             window.location.href = '?room=' + selected;
         });
     }
@@ -4955,7 +5000,7 @@
                     room_id: 'default'
                 }]);
                 
-                localStorage.setItem('leave_ten_o_auth', 'true');
+                localStorage.setItem('leaveteno_auth', 'true');
                 window.location.href = '?room=' + roomKey;
             } catch { alert('저장 실패');
                 saveProfileBtn.innerText = '등록';
